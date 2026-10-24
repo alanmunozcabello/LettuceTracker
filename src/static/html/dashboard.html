@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Lettuce Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- Barra de navegación superior -->
+    <header class="navbar">
+        <div class="navbar-container">
+
+            <div class="navbar-brand-section">
+                <a href="dashboard.html" class="navbar-brand">
+                    <div class="brand-icon-box">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <span class="brand-title">Lettuce Tracker</span>
+                </a>
+
+                <nav class="navbar-nav">
+                    <a href="dashboard.html" class="nav-link active">
+                        <svg class="nav-link-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                        </svg>
+                        <span>Proyectos</span>
+                    </a>
+                    <a href="#" class="nav-link">Requisitos</a>
+                    <a href="#" class="nav-link">Matrices</a>
+                    <a href="#" class="nav-link">Documentos</a>
+                </nav>
+            </div>
+
+            <div class="navbar-actions">
+                <div class="alert-badge-btn" title="Inconsistencias detectadas">
+                    <span class="alert-pulse-dot"></span>
+                    <span>🔔 2 Alertas</span>
+                </div>
+
+                <div class="navbar-divider"></div>
+
+                <div class="user-profile-btn">
+                    <div class="user-avatar">U</div>
+                    <div class="user-info-text">
+                        <span class="user-name">Usuario</span>
+                        <span class="user-role">Líder de Proyecto</span>
+                    </div>
+                    <a href="login.html" title="Cerrar Sesión"
+                        style="margin-left: 0.5rem; color: #fca5a5; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 0.25rem;">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                            </path>
+                        </svg>
+                        <span>Salir</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Encabezado de contexto y seguimiento de hitos -->
+    <section class="context-header">
+        <div class="context-header-container">
+
+            <div>
+                <div class="context-meta-tag">Gestión Documental</div>
+                <div class="context-title-wrapper">
+                    <h1 class="context-title">Lettuce Tracker</h1>
+                    <span class="badge badge-emerald">
+                        <span class="badge-dot badge-dot-emerald"></span>
+                        <span>En Curso</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="milestones-control">
+                <span class="milestones-label">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        style="color: var(--color-primary);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg>
+                    <span>Seguimiento de Hitos:</span>
+                </span>
+
+                <div class="milestone-tabs">
+                    <a href="#" class="milestone-tab active">
+                        <span class="milestone-tab-dot"></span>
+                        <span>Hito 1: Diseño</span>
+                        <span class="milestone-tab-pct">81%</span>
+                    </a>
+                    <a href="#" class="milestone-tab">
+                        <span>Hito 2: Desarrollo</span>
+                    </a>
+                    <a href="#" class="milestone-tab">
+                        <span>Hito 3: Pruebas</span>
+                    </a>
+                    <a href="#" class="milestone-tab">
+                        <span>Ver Todos</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contenido principal -->
+    <main class="dashboard-main">
+
+        <!-- Métricas KPI -->
+        <section class="kpi-grid">
+
+            <article class="kpi-card">
+                <div class="kpi-header">
+                    <span>Requisitos (RU / RS)</span>
+                    <div class="kpi-icon-wrapper kpi-icon-blue">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">18 / 22</span>
+                </div>
+                <div class="kpi-progress-track">
+                    <div class="kpi-progress-fill kpi-fill-blue" style="width: 81%;"></div>
+                </div>
+                <p class="kpi-caption">
+                    <strong style="color: var(--color-primary);">81%</strong> definidos y cubiertos
+                </p>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-header">
+                    <span>Casos de Prueba</span>
+                    <div class="kpi-icon-wrapper kpi-icon-indigo">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">12 / 18</span>
+                </div>
+                <div class="kpi-progress-track">
+                    <div class="kpi-progress-fill kpi-fill-indigo" style="width: 66%;"></div>
+                </div>
+                <p class="kpi-caption">
+                    <strong style="color: var(--color-indigo-600);">66%</strong> validados
+                </p>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-header">
+                    <span>Módulos del Sistema</span>
+                    <div class="kpi-icon-wrapper kpi-icon-slate">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">17</span>
+                </div>
+                <div class="kpi-progress-track">
+                    <div class="kpi-progress-fill kpi-fill-slate" style="width: 100%;"></div>
+                </div>
+                <p class="kpi-caption">Registrados en capa lógica</p>
+            </article>
+
+            <article class="kpi-card kpi-card-danger">
+                <div class="kpi-header">
+                    <span>Alertas Inconsistencias</span>
+                    <div class="kpi-icon-wrapper kpi-icon-rose">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">2</span>
+                </div>
+                <div class="kpi-progress-track">
+                    <div class="kpi-progress-fill kpi-fill-rose" style="width: 100%;"></div>
+                </div>
+                <p class="kpi-caption" style="color: var(--color-rose-600); font-weight: 600;">
+                    Requieren atención inmediata
+                </p>
+            </article>
+
+        </section>
+
+        <!-- Panel de Tareas -->
+        <section class="tasks-panel">
+
+            <div class="tasks-panel-header">
+                <div>
+                    <h2 class="tasks-panel-title">Asignación de Tareas del Equipo</h2>
+                    <p class="tasks-panel-subtitle">Monitoreo de actividades por integrante y fecha límite</p>
+                </div>
+
+                <button type="button" class="btn-primary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
+                        </path>
+                    </svg>
+                    <span>+ Nueva Tarea</span>
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="tasks-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tarea Asignada</th>
+                            <th scope="col">Responsable (Rol)</th>
+                            <th scope="col">Hito</th>
+                            <th scope="col">Fecha Límite</th>
+                            <th scope="col" style="text-align: center;">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="task-name-cell">Diseño preliminar de matriz de trazado</td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">NU</span>
+                                    <span>Nicolas Urbina <span class="assignee-role">(Desarrollador)</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue">Hito 1</span>
+                            </td>
+                            <td>10-Sep-2026</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-in-progress">En Progreso</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="task-name-cell">Especificación de casos de prueba</td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">CA</span>
+                                    <span>Cristian Aliaga <span class="assignee-role">(Tester)</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue">Hito 1</span>
+                            </td>
+                            <td>12-Sep-2026</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-pending">Pendiente</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="task-name-cell">Configuración inicial SSO institucional</td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">AM</span>
+                                    <span>Alan Muñoz <span class="assignee-role">(Arquitecto)</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue">Hito 1</span>
+                            </td>
+                            <td>08-Sep-2026</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-completed">Completado</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="task-name-cell">Implementación de endpoints REST de trazabilidad</td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">NU</span>
+                                    <span>Nicolas Urbina <span class="assignee-role">(Desarrollador)</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue"
+                                    style="background-color: var(--color-indigo-50); color: var(--color-indigo-700); border-color: var(--color-indigo-100);">Hito
+                                    2</span>
+                            </td>
+                            <td>22-Sep-2026</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-pending">Pendiente</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="task-name-cell">Pruebas integrales de carga y exportación PDF</td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">CA</span>
+                                    <span>Cristian Aliaga <span class="assignee-role">(Tester)</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue"
+                                    style="background-color: var(--color-purple-50); color: var(--color-purple-700); border-color: var(--color-purple-100);">Hito
+                                    3</span>
+                            </td>
+                            <td>04-Oct-2026</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-planned">Planificado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tasks-panel-footer">
+                <span>Mostrando 5 tareas registradas para el proyecto</span>
+                <span style="color: var(--color-slate-400);">Lettuce Tracker · Filtrado activo</span>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 Universidad de Talca · Departamento de Ciencias de la Computación (DCC) · Lettuce Tracker</p>
+    </footer>
+
+</body>
+
+</html>

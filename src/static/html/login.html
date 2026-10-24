@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lettuce Tracker - Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+
+        <!-- Panel Izquierdo Institucional -->
+        <aside class="login-aside">
+            <div class="ambient-glow-1"></div>
+            <div class="ambient-glow-2"></div>
+
+            <div class="portal-tag">
+                <span class="portal-tag-dot"></span>
+                <span>Portal Institucional</span>
+            </div>
+
+            <div class="login-brand-content">
+                <div class="login-brand-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+
+                <h1 class="login-brand-title">Lettuce Tracker</h1>
+                <p class="login-brand-subtitle">Gestión Documental de Proyectos</p>
+                <p class="login-brand-institution">Universidad de Talca</p>
+
+                <div class="login-features">
+                    <div class="feature-item">
+                        <div class="feature-icon-box">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <p class="feature-text">Control y trazabilidad de entregas, rúbricas y proyectos académicos.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon-box">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <p class="feature-text">Acceso seguro y unificado con credenciales institucionales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div></div>
+        </aside>
+
+        <!-- Panel Derecho: Formulario de Acceso -->
+        <main class="login-main">
+            <div class="login-form-container">
+
+                <div class="form-header">
+                    <h2 class="form-heading">Iniciar Sesión</h2>
+                    <p class="form-subheading">Ingresa tus credenciales para acceder a la plataforma.</p>
+                </div>
+
+                <form action="dashboard.html" method="GET" class="auth-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Correo Electrónico o Usuario</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon-left">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path>
+                                </svg>
+                            </span>
+                            <input type="email" id="email" name="email" class="form-control"
+                                placeholder="usuario@alumnos.utalca.cl" required autocomplete="username">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon-left">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </span>
+                            <input type="password" id="password" name="password" class="form-control"
+                                placeholder="••••••••••••" required autocomplete="current-password">
+                        </div>
+                    </div>
+
+                    <div class="form-options-row">
+                        <label class="checkbox-label">
+                            <input id="remember_me" type="checkbox" name="remember">
+                            <span>Recordar sesión</span>
+                        </label>
+                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <span>Ingresar a Lettuce Tracker</span>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="auth-separator">
+                    <span class="auth-separator-text">O continuar con acceso institucional</span>
+                </div>
+
+                <a href="dashboard.html" class="btn-educandus">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
+                    <span>Ingresar con Educandus</span>
+                </a>
+
+                <p class="support-text">
+                    ¿Problemas para acceder?
+                    <a href="mailto:soporte.dcc@utalca.cl" class="support-link">Contacta a Soporte</a>
+                </p>
+
+            </div>
+        </main>
+
+    </div>
+
+</body>
+
+</html>
