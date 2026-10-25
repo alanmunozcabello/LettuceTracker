@@ -1,8 +1,4 @@
-"""
-LettuceTracker — Punto de entrada de la aplicación FastAPI.
-
-Módulo MD0008: Administración de Proyectos y Usuarios.
-"""
+"""Punto de entrada de la aplicación FastAPI."""
 
 from __future__ import annotations
 
@@ -13,10 +9,6 @@ from fastapi.staticfiles import StaticFiles
 from src.route.administracion_routes import router as administracion_router
 from src.services.persistencia_json import inicializar_datos_semilla
 
-# ============================================================
-# Crear la aplicación
-# ============================================================
-
 app = FastAPI(
     title="LettuceTracker API",
     description=(
@@ -26,52 +18,27 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# ============================================================
-# CORS — permite peticiones del frontend (ajustar en producción)
-# ============================================================
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restringir en producción
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ============================================================
-# Archivos estáticos (frontend existente)
-# ============================================================
-
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
-
-# ============================================================
-# Registrar routers
-# ============================================================
 
 app.include_router(administracion_router)
 
-# ============================================================
-# Inicialización de datos semilla
-# ============================================================
-
 @app.on_event("startup")
 def startup_event():
-    """Crea los archivos JSON semilla si no existen al iniciar."""
+    """Inicializa los datos semilla."""
     inicializar_datos_semilla()
-
-# ============================================================
-# Endpoint de salud
-# ============================================================
 
 @app.get("/health", tags=["Sistema"])
 def health_check():
-    """Comprobación de salud del servicio."""
+    """Endpoint de salud."""
     return {"status": "ok", "servicio": "LettuceTracker API", "version": "0.1.0"}
-
-
-# ============================================================
-# Ejecución directa con Uvicorn
-# ============================================================
 
 if __name__ == "__main__":
     import uvicorn

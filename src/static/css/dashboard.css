@@ -88,7 +88,6 @@ button {
     cursor: pointer;
 }
 
-/* Barra de navegación superior */
 .navbar {
     background: linear-gradient(135deg, var(--color-slate-950) 0%, var(--color-slate-900) 50%, #172554 100%);
     color: var(--color-white);
@@ -300,7 +299,6 @@ button {
     line-height: 1;
 }
 
-/* Encabezado contextual */
 .context-header {
     background-color: var(--color-white);
     border-bottom: 1px solid var(--color-slate-200);
@@ -389,7 +387,6 @@ button {
 }
 .badge-dot-emerald { background-color: var(--color-emerald-500); }
 
-/* Pestañas de Hitos */
 .milestones-control {
     display: flex;
     flex-direction: column;
@@ -458,7 +455,6 @@ button {
     font-weight: 700;
 }
 
-/* Panel Principal del Dashboard */
 .dashboard-main {
     max-width: 1280px;
     margin: 0 auto;
@@ -473,7 +469,6 @@ button {
     }
 }
 
-/* Grid de métricas */
 .kpi-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -600,7 +595,6 @@ button {
     font-weight: 500;
 }
 
-/* Tabla de tareas */
 .tasks-panel {
     background-color: var(--color-white);
     border-radius: var(--radius-xl);

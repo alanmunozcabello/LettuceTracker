@@ -13,9 +13,7 @@ from pydantic import BaseModel, Field, field_validator
 from src.models.miembro_proyecto import ROLES_PERMITIDOS
 
 
-# ============================================================
-# Esquemas de Proyecto
-# ============================================================
+# Esquemas de proyecto
 
 class ProyectoCreate(BaseModel):
     """Esquema de entrada para crear un proyecto."""
@@ -63,9 +61,7 @@ class ProyectoResponse(BaseModel):
     fecha: str
 
 
-# ============================================================
-# Esquemas de Matrícula
-# ============================================================
+# Esquemas de matrícula
 
 class MatriculaCreate(BaseModel):
     """Esquema de entrada para registrar una matrícula."""
@@ -107,9 +103,7 @@ class MatriculaResponse(BaseModel):
     fecha: str
 
 
-# ============================================================
-# Esquemas de MiembroProyecto
-# ============================================================
+# Esquemas de miembros
 
 class MiembroProyectoCreate(BaseModel):
     """Esquema de entrada para asignar un miembro a un proyecto."""
@@ -156,9 +150,7 @@ class MiembroProyectoResponse(BaseModel):
     rol: str
 
 
-# ============================================================
-# Esquemas para verificación de permisos
-# ============================================================
+# Esquemas de permisos
 
 class VerificarPermisoRequest(BaseModel):
     """Esquema de entrada para verificar si un usuario tiene un rol."""

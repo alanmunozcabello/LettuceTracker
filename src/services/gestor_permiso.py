@@ -49,12 +49,10 @@ class GestorPermiso:
             raise EntidadNoEncontrada("Miembro", f"proyecto={id_proyecto}, usuario={id_usuario}")
         return MiembroProyecto.from_dict(miembros[0])
 
-    # Métodos pendientes de implementación
-
     def verificar_permiso(self, id_proyecto: str, id_usuario: str, rol: str) -> bool:
-        """TODO: buscar miembro y comparar rol. Devolver True/False."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("verificar_permiso no implementado.")
 
     def listar_miembros(self, id_proyecto: str) -> list[MiembroProyecto]:
-        """TODO: verificar que el proyecto exista, buscar todos los miembros con ese id_proyecto."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("listar_miembros no implementado.")

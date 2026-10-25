@@ -35,12 +35,10 @@ class GestorMatricula:
         agregar_registro("matriculas", matricula.to_dict())
         return matricula
 
-    # Métodos pendientes de implementación
-
     def buscar_matricula(self, id_matricula: str) -> Matricula:
-        """TODO: buscar en 'matriculas' por 'id_matricula', lanzar EntidadNoEncontrada si no existe."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("buscar_matricula no implementado.")
 
     def listar_matriculas(self, id_usuario: str | None = None, id_curso: str | None = None) -> list[Matricula]:
-        """TODO: construir filtros y usar buscar_registros(), devolver lista de Matricula."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("listar_matriculas no implementado.")

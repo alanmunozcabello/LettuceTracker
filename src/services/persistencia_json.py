@@ -23,7 +23,6 @@ from pathlib import Path
 from typing import Any
 
 
-# Directorio donde se almacenan los archivos JSON
 _DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
@@ -122,10 +121,6 @@ def buscar_registros(
     ]
 
 
-# ============================================================
-# Datos semilla provisionales
-# ============================================================
-
 def inicializar_datos_semilla() -> None:
     """
     Crea archivos de datos semilla si no existen.
@@ -137,7 +132,6 @@ def inicializar_datos_semilla() -> None:
     """
     _asegurar_directorio()
 
-    # Usuarios semilla
     if not _ruta_archivo("usuarios").exists():
         usuarios = [
             {"id": "USR001", "nombre": "Nicolas Urbina", "email": "nurbina@alumnos.utalca.cl"},
@@ -146,7 +140,6 @@ def inicializar_datos_semilla() -> None:
         ]
         guardar_coleccion("usuarios", usuarios)
 
-    # Cursos semilla
     if not _ruta_archivo("cursos").exists():
         cursos = [
             {"id": "CUR001", "nombre": "Diseño de Software", "semestre": "2026-2"},
@@ -154,7 +147,6 @@ def inicializar_datos_semilla() -> None:
         ]
         guardar_coleccion("cursos", cursos)
 
-    # Colecciones vacías
     for col in ("proyectos", "matriculas", "miembros"):
         if not _ruta_archivo(col).exists():
             guardar_coleccion(col, [])

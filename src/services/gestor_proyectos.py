@@ -36,12 +36,10 @@ class GestorProyectos:
             raise EntidadNoEncontrada("Proyecto", id)
         return Proyecto.from_dict(registro)
 
-    # Métodos pendientes de implementación
-
     def listar_proyectos(self) -> list[Proyecto]:
-        """TODO: cargar colección 'proyectos' y reconstruir las entidades."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("listar_proyectos no implementado.")
 
     def validar_proyecto(self, id: str, nombre: str, descripcion: str) -> None:
-        """TODO: validar reglas de negocio de creación (id único, nombre obligatorio, longitud)."""
+        """Método pendiente de implementación."""
         raise NotImplementedError("validar_proyecto no implementado.")

@@ -37,9 +37,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-# ============================================================
-# Fixture para aislar los datos de cada prueba
-# ============================================================
+# Fixture de pruebas
 
 @pytest.fixture(autouse=True)
 def datos_aislados(tmp_path):
@@ -47,9 +45,7 @@ def datos_aislados(tmp_path):
     Redirige la persistencia JSON a un directorio temporal para cada test.
     Crea datos semilla mínimos para las pruebas.
     """
-    # Parchear el directorio de datos
     with mock.patch("src.services.persistencia_json._DATA_DIR", tmp_path):
-        # Crear datos semilla en el directorio temporal
         usuarios = [
             {"id": "USR001", "nombre": "Nicolas Urbina", "email": "nurbina@alumnos.utalca.cl"},
             {"id": "USR002", "nombre": "Cristian Aliaga", "email": "caliaga@alumnos.utalca.cl"},
@@ -75,9 +71,7 @@ def client():
     return TestClient(app)
 
 
-# ============================================================
-# PROYECTOS
-# ============================================================
+# Pruebas de proyectos
 
 class TestCrearProyecto:
     """Pruebas para POST /api/v1/administracion/proyectos."""
@@ -138,9 +132,7 @@ class TestConsultarProyecto:
         assert resp.status_code == 404
 
 
-# ============================================================
-# MATRÍCULAS
-# ============================================================
+# Pruebas de matrículas
 
 class TestMatriculas:
     """Pruebas para POST /api/v1/administracion/matriculas."""
@@ -182,9 +174,7 @@ class TestMatriculas:
         assert resp.status_code == 404
 
 
-# ============================================================
-# MIEMBROS / PERMISOS
-# ============================================================
+# Pruebas de miembros y permisos
 
 class TestAsignarMiembro:
     """Pruebas para POST /api/v1/administracion/proyectos/{id}/miembros."""
@@ -277,9 +267,7 @@ class TestConsultarMiembro:
         assert resp.status_code == 404
 
 
-# ============================================================
-# HEALTH CHECK
-# ============================================================
+# Prueba del endpoint de salud
 
 class TestHealth:
     """Pruebas para GET /health."""

@@ -35,7 +35,7 @@ def _manejar_excepcion(e: Exception) -> None:
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error interno del servidor.")
 
 
-# Proyectos
+# Endpoints de proyectos
 
 @router.post("/proyectos", response_model=ProyectoResponse, status_code=status.HTTP_201_CREATED, summary="Crear un proyecto")
 def crear_proyecto(datos: ProyectoCreate):
@@ -63,7 +63,7 @@ def listar_proyectos():
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_proyectos no implementado.")
 
 
-# Matrículas
+# Endpoints de matrículas
 
 @router.post("/matriculas", response_model=MatriculaResponse, status_code=status.HTTP_201_CREATED, summary="Matricular un estudiante")
 def matricular_estudiante(datos: MatriculaCreate):
@@ -90,7 +90,7 @@ def listar_matriculas(
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_matriculas no implementado.")
 
 
-# Miembros y permisos
+# Endpoints de miembros y permisos
 
 @router.post("/proyectos/{id_proyecto}/miembros", response_model=MiembroProyectoResponse, summary="Asignar miembro a un proyecto")
 def asignar_miembro(id_proyecto: str, datos: MiembroProyectoCreate):

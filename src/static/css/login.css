@@ -64,7 +64,6 @@ button, input {
     color: inherit;
 }
 
-/* Disposición general */
 .login-wrapper {
     min-height: 100vh;
     width: 100%;
@@ -78,7 +77,6 @@ button, input {
     }
 }
 
-/* Panel izquierdo */
 .login-aside {
     width: 100%;
     min-height: 380px;
@@ -243,7 +241,6 @@ button, input {
     line-height: 1.5;
 }
 
-/* Panel derecho con formulario */
 .login-main {
     width: 100%;
     min-height: 100vh;

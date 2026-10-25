@@ -12,10 +12,7 @@ from datetime import datetime
 from typing import ClassVar
 
 
-# --- Estados permitidos para un proyecto ---
-# Decisión provisional: estos estados se definen aquí porque el repositorio
-# no contenía una lista preexistente. Si el proyecto define estados en otra
-# parte, esta lista debe unificarse con aquella.
+# Estados permitidos para un proyecto
 ESTADOS_PERMITIDOS: list[str] = ["Activo", "Inactivo", "Finalizado", "Cancelado"]
 
 
@@ -30,8 +27,6 @@ class Proyecto:
         self.descripcion: str = descripcion
         self.estado: str = "Activo"
         self.fecha: str = datetime.now().isoformat()
-
-    # --- Métodos de dominio ---
 
     def set_estado(self, estado: str) -> None:
         """Cambia el estado del proyecto si el nuevo estado es permitido."""

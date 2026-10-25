@@ -17,9 +17,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 
-# --- Roles permitidos dentro de un proyecto ---
-# Decisión provisional basada en los roles visibles en dashboard.html:
-# "Desarrollador", "Tester", "Arquitecto", "Líder de Proyecto".
+# Roles permitidos dentro de un proyecto
 ROLES_PERMITIDOS: list[str] = [
     "Líder de Proyecto",
     "Desarrollador",
