@@ -1,28 +1,9 @@
-"""
-Rutas HTTP del módulo MD0008 — Administración de Proyectos y Usuarios.
-
-Todos los endpoints delegan en AdministracionFacade. Ninguna ruta accede
-directamente a los gestores ni a la capa de persistencia.
-
-Endpoints implementados (6 de 11):
-  ✅ POST   /proyectos
-  ✅ GET    /proyectos/{id_proyecto}
-  ✅ POST   /matriculas
-  ✅ POST   /proyectos/{id_proyecto}/miembros
-  ✅ GET    /proyectos/{id_proyecto}/miembros/{id_usuario}
-  ✅ GET    /proyectos/{id_proyecto}/miembros/{id_usuario}/permisos
-
-Endpoints pendientes de implementación (5 de 11):
-  ❌ GET    /proyectos
-  ❌ GET    /matriculas/{id_matricula}
-  ❌ GET    /matriculas
-  ❌ GET    /proyectos/{id_proyecto}/miembros
-  ❌ POST   /proyectos/{id_proyecto}/miembros/{id_usuario}/verificar-permiso
-"""
+"""Rutas HTTP del módulo MD0008 — Administración de Proyectos y Usuarios."""
 
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query, status
+from fastapi.responses import JSONResponse
 
 from src.models.schemas import (
     MiembroProyectoCreate,
@@ -38,14 +19,8 @@ from src.services.administracion_facade import AdministracionFacade
 from src.services.excepciones import EntidadDuplicada, EntidadNoEncontrada, ReglaNegocioError
 
 router = APIRouter(prefix="/api/v1/administracion", tags=["Administración"])
-
-# Instancia única del facade para todas las rutas
 _facade = AdministracionFacade()
 
-
-# ============================================================
-# Utilidad para manejar excepciones de dominio
-# ============================================================
 
 def _manejar_excepcion(e: Exception) -> None:
     """Transforma excepciones de dominio en HTTPException."""
@@ -56,45 +31,23 @@ def _manejar_excepcion(e: Exception) -> None:
     if isinstance(e, ReglaNegocioError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     if isinstance(e, NotImplementedError):
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail=str(e),
-        )
-    # Error inesperado — no revelar detalles internos
-    raise HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail="Error interno del servidor.",
-    )
+        raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail=str(e))
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error interno del servidor.")
 
 
-# ============================================================
-# PROYECTOS — Endpoints implementados
-# ============================================================
+# Proyectos
 
-@router.post(
-    "/proyectos",
-    response_model=ProyectoResponse,
-    status_code=status.HTTP_201_CREATED,
-    summary="Crear un proyecto",
-)
+@router.post("/proyectos", response_model=ProyectoResponse, status_code=status.HTTP_201_CREATED, summary="Crear un proyecto")
 def crear_proyecto(datos: ProyectoCreate):
     """Crea un nuevo proyecto con estado inicial 'Activo'."""
     try:
-        proyecto = _facade.crear_proyecto(
-            id=datos.id,
-            nombre=datos.nombre,
-            descripcion=datos.descripcion,
-        )
+        proyecto = _facade.crear_proyecto(id=datos.id, nombre=datos.nombre, descripcion=datos.descripcion)
         return ProyectoResponse(**proyecto.to_dict())
     except (EntidadDuplicada, EntidadNoEncontrada, ReglaNegocioError, NotImplementedError) as e:
         _manejar_excepcion(e)
 
 
-@router.get(
-    "/proyectos/{id_proyecto}",
-    response_model=ProyectoResponse,
-    summary="Consultar un proyecto",
-)
+@router.get("/proyectos/{id_proyecto}", response_model=ProyectoResponse, summary="Consultar un proyecto")
 def consultar_proyecto(id_proyecto: str):
     """Obtiene un proyecto específico por su identificador."""
     try:
@@ -104,66 +57,55 @@ def consultar_proyecto(id_proyecto: str):
         _manejar_excepcion(e)
 
 
-# ============================================================
-# MATRÍCULAS — Endpoints implementados
-# ============================================================
+@router.get("/proyectos", response_model=list[ProyectoResponse], summary="Listar proyectos")
+def listar_proyectos():
+    """Lista todos los proyectos registrados. TODO: pendiente de implementación."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_proyectos no implementado.")
 
-@router.post(
-    "/matriculas",
-    response_model=MatriculaResponse,
-    status_code=status.HTTP_201_CREATED,
-    summary="Matricular un estudiante",
-)
+
+# Matrículas
+
+@router.post("/matriculas", response_model=MatriculaResponse, status_code=status.HTTP_201_CREATED, summary="Matricular un estudiante")
 def matricular_estudiante(datos: MatriculaCreate):
     """Registra la matrícula de un usuario en un curso."""
     try:
-        matricula = _facade.matricular_estudiante(
-            id_usuario=datos.id_usuario,
-            id_curso=datos.id_curso,
-        )
+        matricula = _facade.matricular_estudiante(id_usuario=datos.id_usuario, id_curso=datos.id_curso)
         return MatriculaResponse(**matricula.to_dict())
     except (EntidadDuplicada, EntidadNoEncontrada, ReglaNegocioError, NotImplementedError) as e:
         _manejar_excepcion(e)
 
 
-# ============================================================
-# MIEMBROS / PERMISOS — Endpoints implementados
-# ============================================================
+@router.get("/matriculas/{id_matricula}", response_model=MatriculaResponse, summary="Consultar una matrícula")
+def consultar_matricula(id_matricula: str):
+    """Consulta una matrícula por su identificador. TODO: pendiente de implementación."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="consultar_matricula no implementado.")
 
-@router.post(
-    "/proyectos/{id_proyecto}/miembros",
-    response_model=MiembroProyectoResponse,
-    summary="Asignar miembro a un proyecto",
-)
+
+@router.get("/matriculas", response_model=list[MatriculaResponse], summary="Listar matrículas")
+def listar_matriculas(
+    id_usuario: str | None = Query(default=None, description="Filtrar por usuario"),
+    id_curso: str | None = Query(default=None, description="Filtrar por curso"),
+):
+    """Lista matrículas con filtros opcionales. TODO: pendiente de implementación."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_matriculas no implementado.")
+
+
+# Miembros y permisos
+
+@router.post("/proyectos/{id_proyecto}/miembros", response_model=MiembroProyectoResponse, summary="Asignar miembro a un proyecto")
 def asignar_miembro(id_proyecto: str, datos: MiembroProyectoCreate):
-    """
-    Registra a un usuario como miembro de un proyecto con un rol.
-    Si ya es miembro, actualiza su rol.
-    Devuelve 201 si se creó la pertenencia o 200 si se actualizó.
-    """
+    """Asigna un usuario como miembro de un proyecto. Si ya es miembro, actualiza su rol."""
     try:
-        miembro, es_nuevo = _facade.asignar_permiso(
-            id_proyecto=id_proyecto,
-            id_usuario=datos.id_usuario,
-            rol=datos.rol,
-        )
+        miembro, es_nuevo = _facade.asignar_permiso(id_proyecto=id_proyecto, id_usuario=datos.id_usuario, rol=datos.rol)
         respuesta = MiembroProyectoResponse(**miembro.to_dict())
         if es_nuevo:
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                content=respuesta.model_dump(),
-                status_code=status.HTTP_201_CREATED,
-            )
+            return JSONResponse(content=respuesta.model_dump(), status_code=status.HTTP_201_CREATED)
         return respuesta
     except (EntidadDuplicada, EntidadNoEncontrada, ReglaNegocioError, NotImplementedError) as e:
         _manejar_excepcion(e)
 
 
-@router.get(
-    "/proyectos/{id_proyecto}/miembros/{id_usuario}",
-    response_model=MiembroProyectoResponse,
-    summary="Consultar miembro de un proyecto",
-)
+@router.get("/proyectos/{id_proyecto}/miembros/{id_usuario}", response_model=MiembroProyectoResponse, summary="Consultar miembro de un proyecto")
 def consultar_miembro(id_proyecto: str, id_usuario: str):
     """Consulta la pertenencia de un usuario a un proyecto."""
     try:
@@ -173,16 +115,9 @@ def consultar_miembro(id_proyecto: str, id_usuario: str):
         _manejar_excepcion(e)
 
 
-@router.get(
-    "/proyectos/{id_proyecto}/miembros/{id_usuario}/permisos",
-    response_model=MiembroProyectoResponse,
-    summary="Consultar permisos de un miembro",
-)
+@router.get("/proyectos/{id_proyecto}/miembros/{id_usuario}/permisos", response_model=MiembroProyectoResponse, summary="Consultar permisos de un miembro")
 def consultar_permisos_miembro(id_proyecto: str, id_usuario: str):
-    """
-    Consulta el rol/permisos registrados de un miembro en un proyecto.
-    No expone información de otros proyectos.
-    """
+    """Consulta el rol/permisos de un miembro en un proyecto."""
     try:
         miembro = _facade.consultar_miembro(id_proyecto, id_usuario)
         return MiembroProyectoResponse(**miembro.to_dict())
@@ -190,102 +125,13 @@ def consultar_permisos_miembro(id_proyecto: str, id_usuario: str):
         _manejar_excepcion(e)
 
 
-# ============================================================
-# ENDPOINTS PENDIENTES de implementación
-# ============================================================
-
-@router.get(
-    "/proyectos",
-    response_model=list[ProyectoResponse],
-    summary="Listar proyectos",
-)
-def listar_proyectos():
-    """
-    Lista todos los proyectos registrados.
-
-    TODO: Implementar — asignado a otro integrante del equipo.
-    Debe invocar _facade.listar_proyectos() y transformar el resultado.
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Endpoint listar_proyectos no implementado — pendiente de asignación.",
-    )
-
-
-@router.get(
-    "/matriculas/{id_matricula}",
-    response_model=MatriculaResponse,
-    summary="Consultar una matrícula",
-)
-def consultar_matricula(id_matricula: str):
-    """
-    Consulta una matrícula por su identificador.
-
-    TODO: Implementar — asignado a otro integrante del equipo.
-    Debe invocar _facade.consultar_matricula(id_matricula).
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Endpoint consultar_matricula no implementado — pendiente de asignación.",
-    )
-
-
-@router.get(
-    "/matriculas",
-    response_model=list[MatriculaResponse],
-    summary="Listar matrículas",
-)
-def listar_matriculas(
-    id_usuario: str | None = Query(default=None, description="Filtrar por usuario"),
-    id_curso: str | None = Query(default=None, description="Filtrar por curso"),
-):
-    """
-    Lista matrículas con filtros opcionales.
-
-    TODO: Implementar — asignado a otro integrante del equipo.
-    Debe invocar _facade.listar_matriculas(id_usuario, id_curso).
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Endpoint listar_matriculas no implementado — pendiente de asignación.",
-    )
-
-
-@router.get(
-    "/proyectos/{id_proyecto}/miembros",
-    response_model=list[MiembroProyectoResponse],
-    summary="Listar miembros de un proyecto",
-)
+@router.get("/proyectos/{id_proyecto}/miembros", response_model=list[MiembroProyectoResponse], summary="Listar miembros de un proyecto")
 def listar_miembros(id_proyecto: str):
-    """
-    Lista los integrantes de un proyecto.
-
-    TODO: Implementar — asignado a otro integrante del equipo.
-    Debe invocar _facade.listar_miembros(id_proyecto).
-    Devuelve 404 si el proyecto no existe.
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Endpoint listar_miembros no implementado — pendiente de asignación.",
-    )
+    """Lista los integrantes de un proyecto. TODO: pendiente de implementación."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_miembros no implementado.")
 
 
-@router.post(
-    "/proyectos/{id_proyecto}/miembros/{id_usuario}/verificar-permiso",
-    response_model=VerificarPermisoResponse,
-    summary="Verificar permiso de un miembro",
-)
-def verificar_permiso(
-    id_proyecto: str, id_usuario: str, datos: VerificarPermisoRequest
-):
-    """
-    Verifica si un usuario tiene un rol específico en un proyecto.
-
-    TODO: Implementar — asignado a otro integrante del equipo.
-    Debe invocar _facade.verificar_permiso(id_proyecto, id_usuario, datos.rol)
-    y devolver un VerificarPermisoResponse con el resultado booleano.
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Endpoint verificar_permiso no implementado — pendiente de asignación.",
-    )
+@router.post("/proyectos/{id_proyecto}/miembros/{id_usuario}/verificar-permiso", response_model=VerificarPermisoResponse, summary="Verificar permiso de un miembro")
+def verificar_permiso(id_proyecto: str, id_usuario: str, datos: VerificarPermisoRequest):
+    """Verifica si un usuario tiene un rol específico en un proyecto. TODO: pendiente de implementación."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="verificar_permiso no implementado.")
