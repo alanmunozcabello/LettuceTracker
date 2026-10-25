@@ -30,6 +30,11 @@ app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.include_router(administracion_router)
 
+@app.get("/")
+def root():
+    """Endpoint raíz."""
+    return {"message": "Bienvenido a LettuceTracker API"}
+
 @app.on_event("startup")
 def startup_event():
     """Inicializa los datos semilla."""
