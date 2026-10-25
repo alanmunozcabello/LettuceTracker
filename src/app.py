@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import Cookie, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.route.administracion_routes import router as administracion_router
-from src.route.autenticacion_routes import router as autenticacion_router
+from src.route.autenticacion_routes import (
+    _usuario_de_token,
+    router as autenticacion_router,
+)
+from src.services.autenticacion import JWT_COOKIE_NAME
 from src.services.persistencia_json import inicializar_datos_semilla
 
 app = FastAPI(
@@ -27,10 +32,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="src/static"), name="static")
-
 app.include_router(administracion_router)
 app.include_router(autenticacion_router)
+
+
+@app.get("/static/html/dashboard.html", include_in_schema=False)
+def dashboard_estatico_protegido(
+    token: str | None = Cookie(default=None, alias=JWT_COOKIE_NAME),
+) -> FileResponse:
+    """Evita el acceso directo al HTML del dashboard sin autenticación."""
+    _usuario_de_token(token)
+    return FileResponse(
+        "src/static/html/dashboard.html",
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
+
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
 
 @app.get("/")
 def root():

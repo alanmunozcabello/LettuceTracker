@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
         <div class="navbar-container">
 
             <div class="navbar-brand-section">
-                <a href="dashboard.html" class="navbar-brand">
+                <a href="/api/v1/auth/dashboard" class="navbar-brand">
                     <div class="brand-icon-box">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                 </a>
 
                 <nav class="navbar-nav">
-                    <a href="dashboard.html" class="nav-link active">
+                    <a href="/api/v1/auth/dashboard" class="nav-link active">
                         <svg class="nav-link-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
@@ -59,7 +59,7 @@
                         <span class="user-name">Usuario</span>
                         <span class="user-role">Líder de Proyecto</span>
                     </div>
-                    <a href="login.html" title="Cerrar Sesión"
+                    <a href="#" id="logout-link" title="Cerrar Sesión"
                         style="margin-left: 0.5rem; color: #fca5a5; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 0.25rem;">
                         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -348,6 +348,32 @@
     <footer class="app-footer">
         <p>© 2026 Universidad de Talca · Departamento de Ciencias de la Computación (DCC) · Lettuce Tracker</p>
     </footer>
+
+    <script>
+        const loginPage = "/static/html/login.html";
+
+        async function validarSesion() {
+            const response = await fetch("/api/v1/auth/me", {
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+            if (!response.ok) {
+                window.location.replace(loginPage);
+            }
+        }
+
+        document.getElementById("logout-link").addEventListener("click", async (event) => {
+            event.preventDefault();
+            await fetch("/api/v1/auth/logout", {
+                method: "POST",
+                credentials: "same-origin"
+            });
+            window.location.replace(loginPage);
+        });
+
+        window.addEventListener("pageshow", validarSesion);
+        validarSesion();
+    </script>
 
 </body>
 

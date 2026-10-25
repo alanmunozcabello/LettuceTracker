@@ -70,3 +70,23 @@ def test_login_rechaza_campos_extra(client):
     )
 
     assert response.status_code == 422
+
+
+def test_dashboard_requiere_sesion(client):
+    response = client.get("/static/html/dashboard.html")
+
+    assert response.status_code == 401
+
+
+def test_logout_impide_reutilizar_la_sesion_en_el_navegador(client):
+    login_response = client.post(
+        "/api/v1/auth/login",
+        json={"email": "nurbina@alumnos.utalca.cl", "contrasena": "nurbina123"},
+    )
+    assert login_response.status_code == 200
+    assert client.get("/static/html/dashboard.html").status_code == 200
+
+    logout_response = client.post("/api/v1/auth/logout")
+
+    assert logout_response.status_code == 204
+    assert client.get("/static/html/dashboard.html").status_code == 401

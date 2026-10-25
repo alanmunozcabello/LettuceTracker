@@ -37,6 +37,13 @@ class LoginResponse(BaseModel):
     usuario: dict[str, str | None]
 
 
+class SesionResponse(BaseModel):
+    """Estado de la sesión autenticada."""
+
+    autenticado: bool
+    usuario: dict[str, str | None]
+
+
 # Esquemas de proyecto
 
 class ProyectoCreate(BaseModel):
