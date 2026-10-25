@@ -134,9 +134,24 @@ def inicializar_datos_semilla() -> None:
 
     if not _ruta_archivo("usuarios").exists():
         usuarios = [
-            {"id": "USR001", "nombre": "Nicolas Urbina", "email": "nurbina@alumnos.utalca.cl"},
-            {"id": "USR002", "nombre": "Cristian Aliaga", "email": "caliaga@alumnos.utalca.cl"},
-            {"id": "USR003", "nombre": "Alan Muñoz", "email": "amunoz@alumnos.utalca.cl"},
+            {
+                "id": "USR001",
+                "nombre": "Nicolas Urbina",
+                "email": "nurbina@alumnos.utalca.cl",
+                "contrasena": "nurbina123",
+            },
+            {
+                "id": "USR002",
+                "nombre": "Cristian Aliaga",
+                "email": "caliaga@alumnos.utalca.cl",
+                "contrasena": "Cristiano123",
+            },
+            {
+                "id": "USR003",
+                "nombre": "Alan Muñoz",
+                "email": "amunoz@alumnos.utalca.cl",
+                "contrasena": "Alanys20",
+            },
         ]
         guardar_coleccion("usuarios", usuarios)
 

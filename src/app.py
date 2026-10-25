@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.route.administracion_routes import router as administracion_router
+from src.route.autenticacion_routes import router as autenticacion_router
 from src.services.persistencia_json import inicializar_datos_semilla
 
 app = FastAPI(
@@ -29,6 +30,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.include_router(administracion_router)
+app.include_router(autenticacion_router)
 
 @app.get("/")
 def root():

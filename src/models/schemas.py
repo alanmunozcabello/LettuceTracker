@@ -13,6 +13,30 @@ from pydantic import BaseModel, Field, field_validator
 from src.models.miembro_proyecto import ROLES_PERMITIDOS
 
 
+class LoginRequest(BaseModel):
+    """Credenciales para el login provisional."""
+
+    email: str = Field(..., min_length=1, max_length=254)
+    contrasena: str = Field(..., min_length=1, max_length=128)
+
+    model_config = {"extra": "forbid"}
+
+    @field_validator("email")
+    @classmethod
+    def email_valido(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("El correo es obligatorio.")
+        return v
+
+
+class LoginResponse(BaseModel):
+    """Respuesta exitosa del login sin exponer la contraseña."""
+
+    autenticado: bool
+    usuario: dict[str, str | None]
+
+
 # Esquemas de proyecto
 
 class ProyectoCreate(BaseModel):

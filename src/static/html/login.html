@@ -71,7 +71,7 @@
                     <p class="form-subheading">Ingresa tus credenciales para acceder a la plataforma.</p>
                 </div>
 
-                <form action="dashboard.html" method="GET" class="auth-form">
+                <form id="login-form" class="auth-form">
                     <div class="form-group">
                         <label for="email" class="form-label">Correo Electrónico o Usuario</label>
                         <div class="input-with-icon">
@@ -115,12 +115,13 @@
                         </svg>
                     </button>
                 </form>
+                <p id="login-message" class="support-text" role="alert" aria-live="polite"></p>
 
                 <div class="auth-separator">
                     <span class="auth-separator-text">O continuar con acceso institucional</span>
                 </div>
 
-                <a href="dashboard.html" class="btn-educandus">
+                <a href="#" id="educandus-login" class="btn-educandus">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -138,6 +139,39 @@
         </main>
 
     </div>
+
+    <script>
+        const loginForm = document.getElementById("login-form");
+        const loginMessage = document.getElementById("login-message");
+        const educandusLogin = document.getElementById("educandus-login");
+
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            loginMessage.textContent = "";
+
+            const response = await fetch("/api/v1/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    contrasena: document.getElementById("password").value
+                })
+            });
+
+            if (response.ok) {
+                window.location.href = "dashboard.html";
+                return;
+            }
+
+            const data = await response.json();
+            loginMessage.textContent = data.detail || "No fue posible iniciar sesión.";
+        });
+
+        educandusLogin.addEventListener("click", (event) => {
+            event.preventDefault();
+            loginMessage.textContent = "El acceso con Educandus no está disponible por el momento.";
+        });
+    </script>
 
 </body>
 
