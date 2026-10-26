@@ -1,8 +1,6 @@
 import { api } from './api.js';
 
-// Historial local de matrículas realizadas en esta sesión
-const historialMatriculas = [];
-
+// Notificación Toast
 function mostrarToast(mensaje, tipo = 'success') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -23,6 +21,7 @@ function mostrarToast(mensaje, tipo = 'success') {
     }, 4500);
 }
 
+// Sesión de usuario
 async function inicializarSesion() {
     try {
         const sesion = await api.getSesion();
@@ -44,57 +43,73 @@ async function inicializarSesion() {
     }
 }
 
-function renderizarTablaMatriculas() {
+// Nombre de estudiante por ID
+function obtenerNombreEstudiante(idUsuario) {
+    if (idUsuario === 'USR001') return 'Nicolas Urbina';
+    if (idUsuario === 'USR002') return 'Cristian Aliaga';
+    if (idUsuario === 'USR003') return 'Alan Muñoz';
+    return idUsuario;
+}
+
+// Nombre de curso por ID
+function obtenerNombreCurso(idCurso) {
+    if (idCurso === 'CUR001') return 'Diseño de Software (2026-2)';
+    if (idCurso === 'CUR002') return 'Ingeniería de Software (2026-2)';
+    return idCurso;
+}
+
+// Cargar lista de matrículas
+async function cargarMatriculas(filtros = {}) {
     const tbody = document.getElementById('matriculas-tbody');
     const emptyState = document.getElementById('matriculas-empty');
+    const contador = document.getElementById('matriculas-contador');
     if (!tbody) return;
 
-    tbody.innerHTML = '';
+    try {
+        const matriculas = await api.listarMatriculas(filtros);
+        tbody.innerHTML = '';
 
-    if (historialMatriculas.length === 0) {
-        if (emptyState) emptyState.style.display = 'block';
-        return;
-    }
+        if (!matriculas || matriculas.length === 0) {
+            if (emptyState) emptyState.style.display = 'block';
+            if (contador) contador.textContent = '0 matrículas encontradas';
+            return;
+        }
 
-    if (emptyState) emptyState.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'none';
+        if (contador) contador.textContent = `${matriculas.length} matrícula(s) registradas`;
 
-    historialMatriculas.forEach(m => {
-        const tr = document.createElement('tr');
-        
-        let nombreEstudiante = m.id_usuario;
-        if (m.id_usuario === 'USR001') nombreEstudiante = 'Nicolas Urbina';
-        else if (m.id_usuario === 'USR002') nombreEstudiante = 'Cristian Aliaga';
-        else if (m.id_usuario === 'USR003') nombreEstudiante = 'Alan Muñoz';
+        matriculas.forEach(m => {
+            const nombreEstudiante = obtenerNombreEstudiante(m.id_usuario);
+            const nombreCurso = obtenerNombreCurso(m.id_curso);
+            const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString() : 'Reciente';
 
-        let nombreCurso = m.id_curso;
-        if (m.id_curso === 'CUR001') nombreCurso = 'Diseño de Software (2026-2)';
-        else if (m.id_curso === 'CUR002') nombreCurso = 'Ingeniería de Software (2026-2)';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><code>${m.id_matricula}</code></td>
+                <td>
+                    <div class="assignee-badge">
+                        <span class="assignee-avatar">${m.id_usuario.substring(0, 3)}</span>
+                        <span>${nombreEstudiante} <span class="assignee-role">(${m.id_usuario})</span></span>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge badge-blue">${nombreCurso}</span>
+                </td>
+                <td>${fechaStr}</td>
+                <td style="text-align: center;">
+                    <span class="status-pill status-completed">Inscrito</span>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-        tr.innerHTML = `
-            <td><code>${m.id_matricula}</code></td>
-            <td>
-                <div class="assignee-badge">
-                    <span class="assignee-avatar">${m.id_usuario.substring(0, 3)}</span>
-                    <span>${nombreEstudiante} <span class="assignee-role">(${m.id_usuario})</span></span>
-                </div>
-            </td>
-            <td>
-                <span class="badge badge-blue">${nombreCurso}</span>
-            </td>
-            <td>${new Date(m.fecha).toLocaleString()}</td>
-            <td style="text-align: center;">
-                <span class="status-pill status-completed">Inscrito</span>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    const contador = document.getElementById('matriculas-contador');
-    if (contador) {
-        contador.textContent = `Mostrando ${historialMatriculas.length} matrícula(s) registradas`;
+    } catch (err) {
+        console.error('Error al listar matrículas:', err);
+        mostrarToast(err.message, 'error');
     }
 }
 
+// Formulario de matrícula
 function setupFormularioMatricula() {
     const form = document.getElementById('form-matricular');
     if (!form) return;
@@ -120,9 +135,8 @@ function setupFormularioMatricula() {
             });
 
             mostrarToast(`¡Matrícula exitosa! Código generado: ${matricula.id_matricula}`);
-            historialMatriculas.unshift(matricula);
-            renderizarTablaMatriculas();
             form.reset();
+            await cargarMatriculas();
         } catch (err) {
             mostrarToast(err.message || 'Error al matricular estudiante', 'error');
         } finally {
@@ -132,6 +146,80 @@ function setupFormularioMatricula() {
     });
 }
 
+// Filtros y búsqueda
+function setupFiltros() {
+    const filtroEstudiante = document.getElementById('filtro-estudiante');
+    const filtroCurso = document.getElementById('filtro-curso');
+    const btnLimpiar = document.getElementById('btn-limpiar-filtros');
+
+    const aplicarFiltros = () => {
+        const id_usuario = filtroEstudiante.value || undefined;
+        const id_curso = filtroCurso.value || undefined;
+        cargarMatriculas({ id_usuario, id_curso });
+    };
+
+    if (filtroEstudiante) filtroEstudiante.addEventListener('change', aplicarFiltros);
+    if (filtroCurso) filtroCurso.addEventListener('change', aplicarFiltros);
+
+    if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', () => {
+            if (filtroEstudiante) filtroEstudiante.value = '';
+            if (filtroCurso) filtroCurso.value = '';
+            cargarMatriculas();
+        });
+    }
+
+    // Buscar por código
+    const formBuscar = document.getElementById('form-buscar-matricula');
+    if (formBuscar) {
+        formBuscar.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputId = document.getElementById('buscar-matricula-id');
+            const idMatricula = inputId ? inputId.value.trim() : '';
+
+            if (!idMatricula) {
+                await cargarMatriculas();
+                return;
+            }
+
+            try {
+                const res = await api.consultarMatricula(idMatricula);
+                mostrarToast(`Matrícula encontrada: ${res.id_matricula}`);
+
+                const tbody = document.getElementById('matriculas-tbody');
+                const emptyState = document.getElementById('matriculas-empty');
+                const contador = document.getElementById('matriculas-contador');
+
+                if (emptyState) emptyState.style.display = 'none';
+                if (contador) contador.textContent = '1 matrícula encontrada';
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td><code>${res.id_matricula}</code></td>
+                            <td>
+                                <div class="assignee-badge">
+                                    <span class="assignee-avatar">${res.id_usuario.substring(0, 3)}</span>
+                                    <span>${obtenerNombreEstudiante(res.id_usuario)} <span class="assignee-role">(${res.id_usuario})</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-blue">${obtenerNombreCurso(res.id_curso)}</span>
+                            </td>
+                            <td>${res.fecha ? new Date(res.fecha).toLocaleString() : 'Reciente'}</td>
+                            <td style="text-align: center;">
+                                <span class="status-pill status-completed">Inscrito</span>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (err) {
+                mostrarToast(err.message, 'error');
+            }
+        });
+    }
+}
+
+// Cerrar sesión
 function setupLogout() {
     const logoutBtn = document.getElementById('logout-link');
     if (logoutBtn) {
@@ -143,9 +231,11 @@ function setupLogout() {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    inicializarSesion();
+// Inicio
+window.addEventListener('DOMContentLoaded', async () => {
+    await inicializarSesion();
     setupFormularioMatricula();
+    setupFiltros();
     setupLogout();
-    renderizarTablaMatriculas();
+    await cargarMatriculas();
 });

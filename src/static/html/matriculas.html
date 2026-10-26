@@ -14,7 +14,7 @@
 
 <body>
 
-    <!-- Barra de navegación superior -->
+    <!-- Navegación -->
     <header class="navbar">
         <div class="navbar-container">
 
@@ -74,7 +74,7 @@
         </div>
     </header>
 
-    <!-- Encabezado de contexto -->
+    <!-- Encabezado -->
     <section class="context-header">
         <div class="context-header-container">
 
@@ -107,10 +107,10 @@
     <!-- Contenido principal -->
     <main class="dashboard-main">
 
-        <!-- Grid de Registro y Reglas de Negocio -->
+        <!-- Registro de matrículas -->
         <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
             
-            <!-- Tarjeta Formulario de Matrícula (POST /api/v1/administracion/matriculas) -->
+            <!-- Formulario de matrícula -->
             <section class="tasks-panel" style="padding: 1.75rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-slate-200); padding-bottom: 1rem;">
                     <div style="width: 36px; height: 36px; border-radius: var(--radius-md); background-color: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center;">
@@ -171,18 +171,54 @@
 
         </div>
 
-        <!-- Tabla de Matrículas Generadas -->
+        <!-- Tabla de matrículas -->
         <section class="tasks-panel">
 
-            <div class="tasks-panel-header">
-                <div>
-                    <h2 class="tasks-panel-title">Matrículas Generadas en la Sesión</h2>
-                    <p class="tasks-panel-subtitle">Historial de matrículas procesadas exitosamente por el servidor</p>
+            <div class="tasks-panel-header" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h2 class="tasks-panel-title">Registro General de Matrículas</h2>
+                        <p class="tasks-panel-subtitle">Datos en tiempo real desde GET /api/v1/administracion/matriculas</p>
+                    </div>
+
+                    <span id="matriculas-contador" style="font-size: 0.75rem; font-weight: 600; color: var(--color-slate-500); background-color: var(--color-slate-100); padding: 0.25rem 0.65rem; border-radius: var(--radius-full);">
+                        Cargando registros...
+                    </span>
                 </div>
 
-                <span id="matriculas-contador" style="font-size: 0.75rem; font-weight: 600; color: var(--color-slate-500); background-color: var(--color-slate-100); padding: 0.25rem 0.65rem; border-radius: var(--radius-full);">
-                    0 matrículas registradas
-                </span>
+                <!-- Filtros y búsqueda -->
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; background-color: var(--color-slate-50); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-slate-200);">
+                    
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 0.35rem;">
+                            <label for="filtro-estudiante" style="font-size: 0.75rem; font-weight: 700; color: var(--color-slate-600); text-transform: uppercase;">Alumno:</label>
+                            <select id="filtro-estudiante" class="form-select" style="font-size: 0.8125rem; padding: 0.35rem 0.65rem; min-width: 140px;">
+                                <option value="">Todos los alumnos</option>
+                                <option value="USR001">USR001 — Nicolas Urbina</option>
+                                <option value="USR002">USR002 — Cristian Aliaga</option>
+                                <option value="USR003">USR003 — Alan Muñoz</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 0.35rem;">
+                            <label for="filtro-curso" style="font-size: 0.75rem; font-weight: 700; color: var(--color-slate-600); text-transform: uppercase;">Curso:</label>
+                            <select id="filtro-curso" class="form-select" style="font-size: 0.8125rem; padding: 0.35rem 0.65rem; min-width: 140px;">
+                                <option value="">Todos los cursos</option>
+                                <option value="CUR001">CUR001 — Diseño Software</option>
+                                <option value="CUR002">CUR002 — Ing. Software</option>
+                            </select>
+                        </div>
+
+                        <button type="button" id="btn-limpiar-filtros" class="btn-secondary btn-sm">Limpiar Filtros</button>
+                    </div>
+
+                    <!-- Búsqueda por ID -->
+                    <form id="form-buscar-matricula" style="display: flex; gap: 0.35rem; align-items: center;">
+                        <input type="text" id="buscar-matricula-id" class="form-control" placeholder="Buscar código (ej: MAT-...)" style="font-size: 0.8125rem; padding: 0.35rem 0.65rem; width: 200px;">
+                        <button type="submit" class="btn-primary btn-sm">Buscar</button>
+                    </form>
+
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -197,12 +233,12 @@
                         </tr>
                     </thead>
                     <tbody id="matriculas-tbody">
-                        <!-- Rellenado dinámicamente con JavaScript Fetch -->
+                        <!-- Filas dinámicas -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Estado Vacío -->
+            <!-- Estado vacío -->
             <div id="matriculas-empty" style="padding: 3rem 1.5rem; text-align: center; color: var(--color-slate-400);">
                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
                 <p style="font-weight: 600; color: var(--color-slate-600); font-size: 0.9375rem;">Aún no se han registrado matrículas en esta sesión</p>
@@ -222,7 +258,7 @@
         <p>© 2026 Universidad de Talca · Departamento de Ciencias de la Computación (DCC) · Lettuce Tracker</p>
     </footer>
 
-    <!-- Contenedor para Notificaciones Flotantes Toast -->
+    <!-- Notificaciones toast -->
     <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="/static/js/matriculas.js"></script>

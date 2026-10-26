@@ -791,9 +791,7 @@ button {
     margin-top: auto;
 }
 
-/* ==========================================================================
-   Modales y Formularios Interactivos (Conexión con Backend)
-   ========================================================================== */
+/* Modales y formularios */
 
 .btn-secondary {
     display: inline-flex;
@@ -943,7 +941,7 @@ button {
     color: var(--color-slate-400);
 }
 
-/* Notificación Flotante Toast */
+/* Notificación toast */
 .toast-container {
     position: fixed;
     bottom: 1.5rem;

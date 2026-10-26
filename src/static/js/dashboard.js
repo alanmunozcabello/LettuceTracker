@@ -1,6 +1,6 @@
 import { api } from './api.js';
 
-// Estado global de la vista
+// Estado global
 let proyectoActivo = {
     id: 'PRY001',
     nombre: 'Lettuce Tracker',
@@ -8,9 +8,10 @@ let proyectoActivo = {
     estado: 'Activo'
 };
 
+let listaProyectos = [];
 let usuarioSesion = null;
 
-// Clases de color para roles
+// Color de badge por rol
 function obtenerClaseBadge(rol) {
     switch (rol) {
         case 'Líder de Proyecto':
@@ -28,46 +29,118 @@ function obtenerClaseBadge(rol) {
     }
 }
 
-// Actualiza el rol en la interfaz (tabla de miembros y tabla de tareas)
-function actualizarRolEnInterfaz(idUsuario, rol) {
-    // 1. Actualizar badge en la tabla de miembros
-    const badge = document.querySelector(`[data-member-role="${idUsuario}"]`);
-    if (badge) {
-        badge.textContent = rol;
-        badge.className = `badge ${obtenerClaseBadge(rol)}`;
-    }
-
-    // 2. Actualizar texto de rol en la tabla de tareas
-    const taskRole = document.querySelector(`[data-assignee-role="${idUsuario}"]`);
-    if (taskRole) {
-        taskRole.textContent = `(${rol})`;
-    }
-
-    // 3. Si el usuario actual es el logueado, actualizar el navbar
-    if (usuarioSesion && usuarioSesion.id === idUsuario) {
-        const userRole = document.querySelector('.user-role');
-        if (userRole) {
-            userRole.textContent = rol;
-        }
-    }
+// Nombre de usuario por ID
+function obtenerNombreUsuario(idUsuario) {
+    if (idUsuario === 'USR001') return 'Nicolas Urbina';
+    if (idUsuario === 'USR002') return 'Cristian Aliaga';
+    if (idUsuario === 'USR003') return 'Alan Muñoz';
+    return idUsuario;
 }
 
-// Sincroniza los roles reales de los miembros consultando al backend
-async function sincronizarMiembrosProyecto(idPry) {
-    const usuarios = ['USR001', 'USR002', 'USR003'];
-    for (const idUsuario of usuarios) {
-        try {
-            const m = await api.consultarMiembro(idPry, idUsuario);
-            if (m && m.rol) {
-                actualizarRolEnInterfaz(m.id_usuario, m.rol);
+// Renderizar tabla de miembros
+async function cargarMiembrosProyecto(idPry) {
+    const tbody = document.getElementById('miembros-tbody');
+    if (!tbody) return;
+
+    try {
+        const miembros = await api.listarMiembros(idPry);
+        tbody.innerHTML = '';
+
+        if (!miembros || miembros.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--color-slate-400); padding: 2rem;">
+                        No hay miembros asignados a este proyecto todavía.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        miembros.forEach(m => {
+            const nombre = obtenerNombreUsuario(m.id_usuario);
+            const iniciales = nombre.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-user-row', m.id_usuario);
+            tr.innerHTML = `
+                <td><code>${m.id_usuario}</code></td>
+                <td>
+                    <div class="assignee-badge">
+                        <span class="assignee-avatar">${iniciales}</span>
+                        <span>${nombre}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge ${obtenerClaseBadge(m.rol)}" data-member-role="${m.id_usuario}">${m.rol}</span>
+                </td>
+                <td style="text-align: center;">
+                    <button type="button" class="btn-secondary btn-sm" data-open-modal="modal-asignar-miembro" data-assign-user="${m.id_usuario}">
+                        Modificar Rol
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+
+            const taskRole = document.querySelector(`[data-assignee-role="${m.id_usuario}"]`);
+            if (taskRole) {
+                taskRole.textContent = `(${m.rol})`;
             }
-        } catch (e) {
-            // No asignado a este proyecto
-        }
+
+            if (usuarioSesion && usuarioSesion.id === m.id_usuario) {
+                const userRole = document.querySelector('.user-role');
+                if (userRole) userRole.textContent = m.rol;
+            }
+        });
+
+        tbody.querySelectorAll('[data-assign-user]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idU = btn.getAttribute('data-assign-user');
+                const selectUser = document.getElementById('asignar-id-usuario');
+                if (selectUser) selectUser.value = idU;
+                const modal = document.getElementById('modal-asignar-miembro');
+                if (modal) modal.classList.add('active');
+            });
+        });
+
+    } catch (e) {
+        console.error('Error al listar miembros:', e);
     }
 }
 
-// Utilidad para notificaciones Toast
+// Llenar selector de proyectos
+async function cargarListaProyectos() {
+    const selector = document.getElementById('selector-proyectos');
+    if (!selector) return;
+
+    try {
+        listaProyectos = await api.listarProyectos();
+        selector.innerHTML = '';
+
+        if (!listaProyectos || listaProyectos.length === 0) {
+            selector.innerHTML = `<option value="${proyectoActivo.id}">${proyectoActivo.id} — ${proyectoActivo.nombre}</option>`;
+            return;
+        }
+
+        listaProyectos.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${p.id} — ${p.nombre}`;
+            if (p.id === proyectoActivo.id) opt.selected = true;
+            selector.appendChild(opt);
+        });
+
+        selector.addEventListener('change', async (e) => {
+            const nuevoId = e.target.value;
+            await cargarProyecto(nuevoId);
+        });
+
+    } catch (e) {
+        console.error('Error al listar proyectos:', e);
+    }
+}
+
+// Notificación Toast
 function mostrarToast(mensaje, tipo = 'success') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -88,7 +161,7 @@ function mostrarToast(mensaje, tipo = 'success') {
     }, 4000);
 }
 
-// Inicializar y validar sesión
+// Sesión de usuario
 async function inicializarSesion() {
     try {
         const sesion = await api.getSesion();
@@ -110,19 +183,24 @@ async function inicializarSesion() {
     }
 }
 
-// Cargar datos de un proyecto
+// Consultar proyecto
 async function cargarProyecto(idProyecto) {
     try {
         const p = await api.consultarProyecto(idProyecto);
         proyectoActivo = p;
         actualizarVistaProyecto();
-        await sincronizarMiembrosProyecto(proyectoActivo.id);
+        await cargarMiembrosProyecto(proyectoActivo.id);
+
+        const selector = document.getElementById('selector-proyectos');
+        if (selector) selector.value = p.id;
+
         mostrarToast(`Proyecto '${p.nombre}' cargado con éxito.`);
     } catch (e) {
         mostrarToast(e.message || 'Error al consultar proyecto', 'error');
     }
 }
 
+// Actualizar vista del proyecto
 function actualizarVistaProyecto() {
     const elTitulo = document.getElementById('project-title');
     const elId = document.getElementById('project-id-badge');
@@ -133,9 +211,13 @@ function actualizarVistaProyecto() {
     if (elId) elId.textContent = `ID: ${proyectoActivo.id}`;
     if (elDesc) elDesc.textContent = proyectoActivo.descripcion || 'Sin descripción';
     if (elEstado) elEstado.textContent = proyectoActivo.estado || 'Activo';
+
+    document.querySelectorAll('[data-prefill-project]').forEach(input => {
+        input.value = proyectoActivo.id;
+    });
 }
 
-// Manejo de Modales
+// Eventos de modales y formularios
 function setupModals() {
     // Abrir modales
     document.querySelectorAll('[data-open-modal]').forEach(btn => {
@@ -144,7 +226,6 @@ function setupModals() {
             const modalId = btn.getAttribute('data-open-modal');
             const modal = document.getElementById(modalId);
             if (modal) {
-                // Pre-rellenar id de proyecto si aplica
                 const inputPry = modal.querySelector('[data-prefill-project]');
                 if (inputPry) inputPry.value = proyectoActivo.id;
                 modal.classList.add('active');
@@ -162,7 +243,7 @@ function setupModals() {
         });
     });
 
-    // Formulario Crear Proyecto
+    // Crear proyecto
     const formCrearPry = document.getElementById('form-crear-proyecto');
     if (formCrearPry) {
         formCrearPry.addEventListener('submit', async (e) => {
@@ -182,7 +263,8 @@ function setupModals() {
                 formCrearPry.closest('.modal-backdrop').classList.remove('active');
                 proyectoActivo = nuevoPry;
                 actualizarVistaProyecto();
-                await sincronizarMiembrosProyecto(proyectoActivo.id);
+                await cargarListaProyectos();
+                await cargarMiembrosProyecto(proyectoActivo.id);
             } catch (err) {
                 mostrarToast(err.message, 'error');
             } finally {
@@ -192,7 +274,7 @@ function setupModals() {
         });
     }
 
-    // Formulario Buscar Proyecto
+    // Buscar proyecto
     const formBuscarPry = document.getElementById('form-buscar-proyecto');
     if (formBuscarPry) {
         formBuscarPry.addEventListener('submit', async (e) => {
@@ -214,7 +296,7 @@ function setupModals() {
         });
     }
 
-    // Formulario Asignar Miembro
+    // Asignar miembro
     const formAsignarMiembro = document.getElementById('form-asignar-miembro');
     if (formAsignarMiembro) {
         formAsignarMiembro.addEventListener('submit', async (e) => {
@@ -229,11 +311,10 @@ function setupModals() {
 
             try {
                 const miembro = await api.asignarMiembro(idPry, { id_usuario: idUsuario, rol });
-                // Actualizar inmediatamente la fila en la tabla y en las tareas
-                actualizarRolEnInterfaz(miembro.id_usuario, miembro.rol);
-                mostrarToast(`¡Rol actualizado! ${miembro.id_usuario} es ahora '${miembro.rol}'.`);
+                mostrarToast(`¡Rol actualizado! ${miembro.id_usuario} ahora es '${miembro.rol}'.`);
                 formAsignarMiembro.reset();
                 formAsignarMiembro.closest('.modal-backdrop').classList.remove('active');
+                await cargarMiembrosProyecto(idPry);
             } catch (err) {
                 mostrarToast(err.message, 'error');
             } finally {
@@ -243,7 +324,7 @@ function setupModals() {
         });
     }
 
-    // Formulario Consultar Miembro
+    // Consultar miembro
     const formConsultarMiembro = document.getElementById('form-consultar-miembro');
     const resultadoMiembro = document.getElementById('resultado-consultar-miembro');
     if (formConsultarMiembro) {
@@ -264,7 +345,7 @@ function setupModals() {
                         <div style="font-weight: 700; color: var(--color-slate-900); font-size: 0.875rem;">Miembro Encontrado</div>
                         <div style="font-size: 0.8125rem; color: var(--color-slate-600); margin-top: 0.35rem;">
                             <strong>ID Miembro:</strong> ${res.id_miembro}<br>
-                            <strong>Usuario:</strong> ${res.id_usuario}<br>
+                            <strong>Usuario:</strong> ${res.id_usuario} (${obtenerNombreUsuario(res.id_usuario)})<br>
                             <strong>Proyecto:</strong> ${res.id_proyecto}<br>
                             <strong>Rol Asignado:</strong> <span class="badge ${obtenerClaseBadge(res.rol)}" style="margin-left: 0.25rem;">${res.rol}</span>
                         </div>
@@ -283,9 +364,60 @@ function setupModals() {
             }
         });
     }
+
+    // Verificar permiso
+    const formVerificarPermiso = document.getElementById('form-verificar-permiso');
+    const resultadoPermiso = document.getElementById('resultado-verificar-permiso');
+    if (formVerificarPermiso) {
+        formVerificarPermiso.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const idPry = document.getElementById('verificar-permiso-proyecto').value.trim();
+            const idUsuario = document.getElementById('verificar-permiso-usuario').value.trim();
+            const rol = document.getElementById('verificar-permiso-rol').value;
+
+            const btnSubmit = formVerificarPermiso.querySelector('button[type="submit"]');
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Comprobando...';
+
+            try {
+                const res = await api.verificarPermiso(idPry, idUsuario, rol);
+                resultadoPermiso.style.display = 'block';
+
+                if (res.tiene_permiso) {
+                    resultadoPermiso.innerHTML = `
+                        <div style="background-color: var(--color-emerald-50); border: 1px solid var(--color-emerald-200); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; color: var(--color-emerald-700);">
+                            <div style="font-weight: 700; font-size: 0.875rem;">✅ Permiso Concedido</div>
+                            <div style="font-size: 0.8125rem; margin-top: 0.25rem;">
+                                El usuario <strong>${res.id_usuario}</strong> (${obtenerNombreUsuario(res.id_usuario)}) <strong>SÍ posee</strong> el rol <strong>'${res.rol_solicitado}'</strong> en este proyecto.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultadoPermiso.innerHTML = `
+                        <div style="background-color: var(--color-amber-50); border: 1px solid var(--color-amber-200); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; color: var(--color-amber-700);">
+                            <div style="font-weight: 700; font-size: 0.875rem;">⚠️ Permiso No Asignado</div>
+                            <div style="font-size: 0.8125rem; margin-top: 0.25rem;">
+                                El usuario <strong>${res.id_usuario}</strong> (${obtenerNombreUsuario(res.id_usuario)}) <strong>NO posee</strong> el rol '${res.rol_solicitado}' en este proyecto.
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                resultadoPermiso.style.display = 'block';
+                resultadoPermiso.innerHTML = `
+                    <div style="background-color: var(--color-rose-50); border: 1px solid var(--color-rose-200); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; color: var(--color-rose-700); font-size: 0.8125rem;">
+                        ⚠️ ${err.message}
+                    </div>
+                `;
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Comprobar Permiso';
+            }
+        });
+    }
 }
 
-// Evento de Logout
+// Cerrar sesión
 function setupLogout() {
     const logoutBtn = document.getElementById('logout-link');
     if (logoutBtn) {
@@ -297,13 +429,13 @@ function setupLogout() {
     }
 }
 
-// Inicialización general al cargar el DOM
+// Inicio
 window.addEventListener('DOMContentLoaded', async () => {
     await inicializarSesion();
     setupModals();
     setupLogout();
-    
-    // Consultar el proyecto inicial y sincronizar roles guardados en el backend
+    await cargarListaProyectos();
+
     try {
         const p = await api.consultarProyecto('PRY001');
         proyectoActivo = p;
@@ -312,6 +444,5 @@ window.addEventListener('DOMContentLoaded', async () => {
         actualizarVistaProyecto();
     }
 
-    // Sincronizar los roles reales guardados en miembros.json
-    await sincronizarMiembrosProyecto(proyectoActivo.id);
+    await cargarMiembrosProyecto(proyectoActivo.id);
 });

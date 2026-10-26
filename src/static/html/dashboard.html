@@ -14,7 +14,7 @@
 
 <body>
 
-    <!-- Barra de navegación superior -->
+    <!-- Navegación -->
     <header class="navbar">
         <div class="navbar-container">
 
@@ -81,7 +81,7 @@
         </div>
     </header>
 
-    <!-- Encabezado de contexto y seguimiento de hitos -->
+    <!-- Encabezado -->
     <section class="context-header">
         <div class="context-header-container">
 
@@ -102,8 +102,14 @@
                 </p>
             </div>
 
-            <!-- Botones de Acción para Proyectos (Backend REST) -->
+            <!-- Acciones de proyecto -->
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                    <label for="selector-proyectos" style="font-size: 0.75rem; font-weight: 700; color: var(--color-slate-600); text-transform: uppercase;">Cambiar:</label>
+                    <select id="selector-proyectos" class="form-select" style="min-width: 170px; font-size: 0.8125rem; padding: 0.4rem 0.65rem;">
+                        <option value="PRY001">PRY001 — Lettuce Tracker</option>
+                    </select>
+                </div>
                 <button type="button" class="btn-secondary" data-open-modal="modal-buscar-proyecto">
                     <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -125,7 +131,7 @@
     <!-- Contenido principal -->
     <main class="dashboard-main">
 
-        <!-- Banner de Acceso Rápido a Matrículas -->
+        <!-- Banner de matrículas -->
         <section style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: var(--color-white); border-radius: var(--radius-xl); padding: 1.25rem 1.75rem; display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start; box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 0.5rem;">
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div style="width: 44px; height: 44px; border-radius: var(--radius-lg); background-color: rgba(37, 99, 235, 0.25); border: 1px solid rgba(96, 165, 250, 0.3); display: flex; align-items: center; justify-content: center; color: #60a5fa; flex-shrink: 0;">
@@ -143,7 +149,7 @@
             </a>
         </section>
 
-        <!-- Métricas KPI -->
+        <!-- Métricas -->
         <section class="kpi-grid">
 
             <article class="kpi-card">
@@ -233,7 +239,7 @@
 
         </section>
 
-        <!-- Panel de Miembros y Roles del Proyecto (Backend REST) -->
+        <!-- Panel de miembros -->
         <section class="tasks-panel" style="margin-bottom: 2rem;">
 
             <div class="tasks-panel-header">
@@ -249,6 +255,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
                         <span>Consultar Miembro</span>
+                    </button>
+                    <button type="button" class="btn-secondary btn-sm" data-open-modal="modal-verificar-permiso">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <span>Verificar Permiso</span>
                     </button>
                     <button type="button" class="btn-primary btn-sm" data-open-modal="modal-asignar-miembro">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -430,11 +442,8 @@
         <p>© 2026 Universidad de Talca · Departamento de Ciencias de la Computación (DCC) · Lettuce Tracker</p>
     </footer>
 
-    <!-- ==========================================================================
-         MODALES DE INTERACCIÓN (Conectados por Fetch API)
-         ========================================================================== -->
-
-    <!-- Modal: Crear Proyecto -->
+    <!-- Modales -->
+    <!-- Modal crear proyecto -->
     <div id="modal-crear-proyecto" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
@@ -474,7 +483,7 @@
         </div>
     </div>
 
-    <!-- Modal: Buscar Proyecto -->
+    <!-- Modal buscar proyecto -->
     <div id="modal-buscar-proyecto" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
@@ -506,7 +515,7 @@
         </div>
     </div>
 
-    <!-- Modal: Asignar Miembro / Rol -->
+    <!-- Modal asignar miembro -->
     <div id="modal-asignar-miembro" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
@@ -557,7 +566,7 @@
         </div>
     </div>
 
-    <!-- Modal: Consultar Miembro -->
+    <!-- Modal consultar miembro -->
     <div id="modal-consultar-miembro" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
@@ -599,7 +608,59 @@
         </div>
     </div>
 
-    <!-- Contenedor para Notificaciones Flotantes Toast -->
+    <!-- Modal verificar permiso -->
+    <div id="modal-verificar-permiso" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <span>Verificar Permiso de Miembro</span>
+                </h3>
+                <button type="button" class="modal-close-btn" data-close-modal>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="form-verificar-permiso">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="verificar-permiso-proyecto" class="form-label">Identificador del Proyecto</label>
+                        <input type="text" id="verificar-permiso-proyecto" class="form-control" data-prefill-project required>
+                    </div>
+                    <div class="form-group">
+                        <label for="verificar-permiso-usuario" class="form-label">Usuario</label>
+                        <select id="verificar-permiso-usuario" class="form-select" required>
+                            <option value="">Selecciona un usuario...</option>
+                            <option value="USR001">USR001 — Nicolas Urbina</option>
+                            <option value="USR002">USR002 — Cristian Aliaga</option>
+                            <option value="USR003">USR003 — Alan Muñoz</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="verificar-permiso-rol" class="form-label">Rol a Comprobar</label>
+                        <select id="verificar-permiso-rol" class="form-select" required>
+                            <option value="Líder de Proyecto">Líder de Proyecto</option>
+                            <option value="Desarrollador">Desarrollador</option>
+                            <option value="Tester">Tester</option>
+                            <option value="Arquitecto">Arquitecto</option>
+                            <option value="Documentador">Documentador</option>
+                        </select>
+                        <span class="form-hint">Valida con el endpoint /verificar-permiso si el usuario tiene exactamente este rol.</span>
+                    </div>
+                    <div id="resultado-verificar-permiso" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal>Cerrar</button>
+                    <button type="submit" class="btn-primary">Comprobar Permiso</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificaciones toast -->
     <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="/static/js/dashboard.js"></script>
