@@ -55,11 +55,11 @@ def datos_aislados(tmp_path):
             {"id": "CUR001", "nombre": "Diseño de Software", "semestre": "2026-2"},
             {"id": "CUR002", "nombre": "Ingeniería de Software", "semestre": "2026-2"},
         ]
-        (tmp_path / "usuarios.json").write_text(json.dumps(usuarios, ensure_ascii=False))
-        (tmp_path / "cursos.json").write_text(json.dumps(cursos, ensure_ascii=False))
-        (tmp_path / "proyectos.json").write_text("[]")
-        (tmp_path / "matriculas.json").write_text("[]")
-        (tmp_path / "miembros.json").write_text("[]")
+        (tmp_path / "usuarios.json").write_text(json.dumps(usuarios, ensure_ascii=False), encoding="utf-8")
+        (tmp_path / "cursos.json").write_text(json.dumps(cursos, ensure_ascii=False), encoding="utf-8")
+        (tmp_path / "proyectos.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "matriculas.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "miembros.json").write_text("[]", encoding="utf-8")
 
         yield tmp_path
 
