@@ -36,9 +36,20 @@ class GestorMatricula:
         return matricula
 
     def buscar_matricula(self, id_matricula: str) -> Matricula:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("buscar_matricula no implementado.")
+        """Busca una matrícula por su identificador."""
+        registro = buscar_registro("matriculas", "id_matricula", id_matricula)
+        if registro is None:
+            raise EntidadNoEncontrada("Matrícula", id_matricula)
+        return Matricula.from_dict(registro)
 
     def listar_matriculas(self, id_usuario: str | None = None, id_curso: str | None = None) -> list[Matricula]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_matriculas no implementado.")
+        """Devuelve las matrículas, aplicando filtros opcionales."""
+        filtros = {}
+        if id_usuario is not None:
+            filtros["id_usuario"] = id_usuario
+        if id_curso is not None:
+            filtros["id_curso"] = id_curso
+        return [
+            Matricula.from_dict(registro)
+            for registro in buscar_registros("matriculas", filtros=filtros)
+        ]

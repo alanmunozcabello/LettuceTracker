@@ -50,9 +50,26 @@ class GestorPermiso:
         return MiembroProyecto.from_dict(miembros[0])
 
     def verificar_permiso(self, id_proyecto: str, id_usuario: str, rol: str) -> bool:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("verificar_permiso no implementado.")
+        """Indica si el usuario tiene el rol solicitado en el proyecto."""
+        proyecto = buscar_registro("proyectos", "id", id_proyecto)
+        if proyecto is None:
+            raise EntidadNoEncontrada("Proyecto", id_proyecto)
+
+        miembros = buscar_registros(
+            "miembros",
+            filtros={"id_proyecto": id_proyecto, "id_usuario": id_usuario},
+        )
+        return bool(miembros and miembros[0].get("rol") == rol)
 
     def listar_miembros(self, id_proyecto: str) -> list[MiembroProyecto]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_miembros no implementado.")
+        """Devuelve todos los miembros de un proyecto existente."""
+        proyecto = buscar_registro("proyectos", "id", id_proyecto)
+        if proyecto is None:
+            raise EntidadNoEncontrada("Proyecto", id_proyecto)
+        return [
+            MiembroProyecto.from_dict(registro)
+            for registro in buscar_registros(
+                "miembros",
+                filtros={"id_proyecto": id_proyecto},
+            )
+        ]

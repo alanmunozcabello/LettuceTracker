@@ -59,8 +59,14 @@ def consultar_proyecto(id_proyecto: str):
 
 @router.get("/proyectos", response_model=list[ProyectoResponse], summary="Listar proyectos")
 def listar_proyectos():
-    """Lista todos los proyectos registrados. TODO: pendiente de implementación."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_proyectos no implementado.")
+    """Lista todos los proyectos registrados."""
+    try:
+        return [
+            ProyectoResponse(**proyecto.to_dict())
+            for proyecto in _facade.listar_proyectos()
+        ]
+    except (EntidadNoEncontrada, NotImplementedError) as e:
+        _manejar_excepcion(e)
 
 
 # Endpoints de matrículas
@@ -77,8 +83,12 @@ def matricular_estudiante(datos: MatriculaCreate):
 
 @router.get("/matriculas/{id_matricula}", response_model=MatriculaResponse, summary="Consultar una matrícula")
 def consultar_matricula(id_matricula: str):
-    """Consulta una matrícula por su identificador. TODO: pendiente de implementación."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="consultar_matricula no implementado.")
+    """Consulta una matrícula por su identificador."""
+    try:
+        matricula = _facade.consultar_matricula(id_matricula)
+        return MatriculaResponse(**matricula.to_dict())
+    except (EntidadNoEncontrada, NotImplementedError) as e:
+        _manejar_excepcion(e)
 
 
 @router.get("/matriculas", response_model=list[MatriculaResponse], summary="Listar matrículas")
@@ -86,8 +96,14 @@ def listar_matriculas(
     id_usuario: str | None = Query(default=None, description="Filtrar por usuario"),
     id_curso: str | None = Query(default=None, description="Filtrar por curso"),
 ):
-    """Lista matrículas con filtros opcionales. TODO: pendiente de implementación."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_matriculas no implementado.")
+    """Lista matrículas con filtros opcionales."""
+    try:
+        return [
+            MatriculaResponse(**matricula.to_dict())
+            for matricula in _facade.listar_matriculas(id_usuario, id_curso)
+        ]
+    except (EntidadNoEncontrada, NotImplementedError) as e:
+        _manejar_excepcion(e)
 
 
 # Endpoints de miembros y permisos
@@ -127,11 +143,30 @@ def consultar_permisos_miembro(id_proyecto: str, id_usuario: str):
 
 @router.get("/proyectos/{id_proyecto}/miembros", response_model=list[MiembroProyectoResponse], summary="Listar miembros de un proyecto")
 def listar_miembros(id_proyecto: str):
-    """Lista los integrantes de un proyecto. TODO: pendiente de implementación."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="listar_miembros no implementado.")
+    """Lista los integrantes de un proyecto."""
+    try:
+        return [
+            MiembroProyectoResponse(**miembro.to_dict())
+            for miembro in _facade.listar_miembros(id_proyecto)
+        ]
+    except (EntidadNoEncontrada, NotImplementedError) as e:
+        _manejar_excepcion(e)
 
 
 @router.post("/proyectos/{id_proyecto}/miembros/{id_usuario}/verificar-permiso", response_model=VerificarPermisoResponse, summary="Verificar permiso de un miembro")
 def verificar_permiso(id_proyecto: str, id_usuario: str, datos: VerificarPermisoRequest):
-    """Verifica si un usuario tiene un rol específico en un proyecto. TODO: pendiente de implementación."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="verificar_permiso no implementado.")
+    """Verifica si un usuario tiene un rol específico en un proyecto."""
+    try:
+        tiene_permiso = _facade.verificar_permiso(
+            id_proyecto,
+            id_usuario,
+            datos.rol,
+        )
+        return VerificarPermisoResponse(
+            id_proyecto=id_proyecto,
+            id_usuario=id_usuario,
+            rol_solicitado=datos.rol,
+            tiene_permiso=tiene_permiso,
+        )
+    except (EntidadNoEncontrada, NotImplementedError) as e:
+        _manejar_excepcion(e)

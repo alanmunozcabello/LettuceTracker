@@ -39,21 +39,21 @@ class AdministracionFacade:
         return self._gestor_permiso.buscar_miembro(id_proyecto, id_usuario)
 
     def listar_proyectos(self) -> list[Proyecto]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_proyectos no implementado.")
+        """Lista los proyectos delegando en GestorProyectos."""
+        return self._gestor_proyectos.listar_proyectos()
 
     def consultar_matricula(self, id_matricula: str) -> Matricula:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("consultar_matricula no implementado.")
+        """Consulta una matrícula delegando en GestorMatricula."""
+        return self._gestor_matricula.buscar_matricula(id_matricula)
 
     def listar_matriculas(self, id_usuario: str | None = None, id_curso: str | None = None) -> list[Matricula]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_matriculas no implementado.")
+        """Lista matrículas con filtros opcionales."""
+        return self._gestor_matricula.listar_matriculas(id_usuario, id_curso)
 
     def listar_miembros(self, id_proyecto: str) -> list[MiembroProyecto]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_miembros no implementado.")
+        """Lista los miembros de un proyecto."""
+        return self._gestor_permiso.listar_miembros(id_proyecto)
 
     def verificar_permiso(self, id_proyecto: str, id_usuario: str, rol: str) -> bool:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("verificar_permiso no implementado.")
+        """Verifica un rol delegando en GestorPermiso."""
+        return self._gestor_permiso.verificar_permiso(id_proyecto, id_usuario, rol)

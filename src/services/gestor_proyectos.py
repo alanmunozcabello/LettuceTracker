@@ -37,8 +37,11 @@ class GestorProyectos:
         return Proyecto.from_dict(registro)
 
     def listar_proyectos(self) -> list[Proyecto]:
-        """Método pendiente de implementación."""
-        raise NotImplementedError("listar_proyectos no implementado.")
+        """Devuelve todos los proyectos registrados."""
+        return [
+            Proyecto.from_dict(registro)
+            for registro in cargar_coleccion("proyectos")
+        ]
 
     def validar_proyecto(self, id: str, nombre: str, descripcion: str) -> None:
         """Método pendiente de implementación."""
